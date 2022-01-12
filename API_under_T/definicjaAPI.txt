@@ -1,0 +1,693 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Payments",
+    "description": "This is a service for payments.",
+    "version": "1.0"
+  },
+  "tags": [
+    {
+      "name": "payments",
+      "description": "Operations about payments"
+    }
+  ],
+  "paths": {
+    "/v1/payments": {
+      "get": {
+        "tags": [
+          "payments"
+        ],
+        "summary": "Get all payments of single user",
+        "operationId": "getPayments",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "description": "Return payments of this user",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Limit number of returned records",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Offset for returned list of records",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Payment objects",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponsePayments"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorBadRequest"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorServer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/payment": {
+      "post": {
+        "tags": [
+          "payments"
+        ],
+        "summary": "Store a new payment",
+        "operationId": "storePayment",
+        "requestBody": {
+          "description": "New payment data",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestBodyPayment"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Payment object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponsePayment"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorBadRequest"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorServer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/payment/{id}": {
+      "get": {
+        "tags": [
+          "payments"
+        ],
+        "summary": "Get a single payment",
+        "operationId": "getPayment",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Id of the payment",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Payment object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponsePayment"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorBadRequest"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorNotFound"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorServer"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "payments"
+        ],
+        "summary": "Update the payment",
+        "operationId": "updatePayment",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Id of the payment",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Modified payment data",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestBodyPayment"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Payment updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response200Updated"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorBadRequest"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorNotFound"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorServer"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "payments"
+        ],
+        "summary": "Delete the payment",
+        "operationId": "deletePayment",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Id of the payment",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Payment deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response200Deleted"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorNotFound"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorServer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/payments-total-by-types": {
+      "get": {
+        "tags": [
+          "payments"
+        ],
+        "summary": "Get total amount of user payments by types",
+        "operationId": "getPaymentsTotalByTypes",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "description": "Return payments of this user",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Total",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "properties": {
+                          "paymentTypeId": {
+                            "type": "string",
+                            "example": "193f7235-468b-496b-8b79-7b9b8dba5b84"
+                          },
+                          "total": {
+                            "type": "integer",
+                            "format": "int64"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorBadRequest"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorServer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/payments-total-by-ids": {
+      "get": {
+        "tags": [
+          "payments"
+        ],
+        "summary": "Get total amount of user payments by ids",
+        "operationId": "getPaymentsTotalByIds",
+        "parameters": [
+          {
+            "name": "ids",
+            "in": "query",
+            "required": true,
+            "description": "Array of payments ids",
+            "schema": {
+              "type": "array",
+              "items": {}
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Total",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "total": {
+                          "type": "integer",
+                          "format": "int64"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorBadRequest"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorServer"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Response201": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "format": "number",
+            "example": 201
+          },
+          "message": {
+            "type": "string",
+            "example": "Resource created"
+          }
+        }
+      },
+      "Response200Updated": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "format": "number",
+            "example": 200
+          },
+          "message": {
+            "type": "string",
+            "example": "Resource updated"
+          }
+        }
+      },
+      "Response200Deleted": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "format": "number",
+            "example": 200
+          },
+          "message": {
+            "type": "string",
+            "example": "Resource deleted"
+          }
+        }
+      },
+      "errorBadRequest": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "format": "number",
+            "example": 400
+          },
+          "message": {
+            "type": "string",
+            "example": "Parameter should be an string"
+          }
+        }
+      },
+      "errorNotFound": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "format": "number",
+            "example": 404
+          },
+          "message": {
+            "type": "string",
+            "example": "Resource not found"
+          }
+        }
+      },
+      "errorConflict": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "format": "number",
+            "example": 409
+          },
+          "message": {
+            "type": "string",
+            "example": "Conflict - resource already exists"
+          }
+        }
+      },
+      "errorServer": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "format": "number",
+            "example": 500
+          },
+          "message": {
+            "type": "string",
+            "example": "Internal server error"
+          }
+        }
+      },
+      "Payment": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "1e0b3cac-1614-4af4-8284-c03b9b29340c"
+          },
+          "userId": {
+            "type": "string",
+            "example": "9165a4d8-f0c4-4f19-b70d-887345ffe03e"
+          },
+          "typeId": {
+            "type": "integer",
+            "example": "323b9b87-2259-4a91-8cf5-2840a752e0f3"
+          },
+          "distributionModelId": {
+            "type": "string",
+            "example": "c322c68e-8880-4ec3-aae4-40e29654f297"
+          },
+          "title": {
+            "type": "string",
+            "example": "Rata za studia"
+          },
+          "amount": {
+              "type": "string",
+              "example": "485.00"
+          },
+          "deadline": {
+            "type": "string",
+            "format": "YYYY-MM-DD",
+            "example": "2020-06-01"
+          },
+          "academicYear": {
+            "type": "integer",
+            "example": "2019/2020"
+          },
+          "semester": {
+            "type": "integer",
+            "example": "3"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "YYYY-MM-DD HH:MM:SS",
+            "example": "2020-05-28 15:15:00"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "YYYY-MM-DD HH:MM:SS",
+            "example": "2020-05-28 15:15:00"
+          }
+        }
+      },
+      "ResponsePayments": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "totalCount": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "limit": {
+                "type": "integer",
+                "example": 30
+              },
+              "offset": {
+                "type": "integer",
+                "example": 10
+              },
+              "items": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Payment"
+                }
+              }
+            }
+          }
+        }
+      },
+      "ResponsePayment": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200
+          },
+          "data": {
+            "$ref": "#/components/schemas/Payment"
+          }
+        }
+      },
+      "RequestBodyPayment": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "example": "9165a4d8-f0c4-4f19-b70d-887345ffe03e"
+          },
+          "typeId": {
+            "type": "integer",
+            "example": "8c8758ca-beb5-4f2d-ad50-ed976e6fe5c5"
+          },
+          "distributionModelId": {
+            "type": "string",
+            "example": "24cf73e3-3391-4974-b2b7-95b3344f1c6c"
+          },
+          "title": {
+            "type": "string",
+            "example": "Rata za studia"
+          },
+          "amount": {
+              "type": "string",
+              "example": "485.00"
+          },
+        "deadline": {
+            "type": "string",
+            "format": "YYYY-MM-DD",
+            "example": "2020-06-01"
+          },
+          "academicYear": {
+            "type": "string",
+            "example": "2019/2020"
+          },
+          "semester": {
+            "type": "integer",
+            "example": "3"
+          }
+        }
+      }
+    }
+  }
+}

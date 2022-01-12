@@ -1,0 +1,9 @@
+te_variable.py
+\task_template
+\venv
+\.idea
+\.hypothesis
+\API_under_T\.hypothesis
+\API_under_T\.pytest_cache
+\API_under_T\__pycache__
+\.pytest_cache

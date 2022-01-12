@@ -1,0 +1,451 @@
+components:
+  schemas:
+    Payment:
+      properties:
+        academicYear:
+          example: 2019/2020
+          type: integer
+        amount:
+          example: '485.00'
+          type: string
+        createdAt:
+          example: '2020-05-28 15:15:00'
+          format: YYYY-MM-DD HH:MM:SS
+          type: string
+        deadline:
+          example: '2020-06-01'
+          format: YYYY-MM-DD
+          type: string
+        distributionModelId:
+          example: c322c68e-8880-4ec3-aae4-40e29654f297
+          type: string
+        id:
+          example: 1e0b3cac-1614-4af4-8284-c03b9b29340c
+          format: uuid
+          type: string
+        semester:
+          example: '3'
+          type: integer
+        title:
+          example: Rata za studia
+          type: string
+        typeId:
+          example: 323b9b87-2259-4a91-8cf5-2840a752e0f3
+          type: integer
+        updatedAt:
+          example: '2020-05-28 15:15:00'
+          format: YYYY-MM-DD HH:MM:SS
+          type: string
+        userId:
+          example: 9165a4d8-f0c4-4f19-b70d-887345ffe03e
+          type: string
+      type: object
+    RequestBodyPayment:
+      properties:
+        academicYear:
+          example: 2019/2020
+          type: string
+        amount:
+          example: '485.00'
+          type: string
+        deadline:
+          example: '2020-06-01'
+          format: YYYY-MM-DD
+          type: string
+        distributionModelId:
+          example: 24cf73e3-3391-4974-b2b7-95b3344f1c6c
+          type: string
+        semester:
+          example: '3'
+          type: integer
+        title:
+          example: Rata za studia
+          type: string
+        typeId:
+          example: 8c8758ca-beb5-4f2d-ad50-ed976e6fe5c5
+          type: integer
+        userId:
+          example: 9165a4d8-f0c4-4f19-b70d-887345ffe03e
+          type: string
+      type: object
+    Response200Deleted:
+      properties:
+        code:
+          example: 200
+          format: number
+          type: string
+        message:
+          example: Resource deleted
+          type: string
+      type: object
+    Response200Updated:
+      properties:
+        code:
+          example: 200
+          format: number
+          type: string
+        message:
+          example: Resource updated
+          type: string
+      type: object
+    Response201:
+      properties:
+        code:
+          example: 201
+          format: number
+          type: string
+        message:
+          example: Resource created
+          type: string
+      type: object
+    ResponsePayment:
+      properties:
+        code:
+          example: 200
+          type: integer
+        data:
+          $ref: '#/components/schemas/Payment'
+      type: object
+    ResponsePayments:
+      properties:
+        code:
+          example: 200
+          type: integer
+        data:
+          properties:
+            items:
+              items:
+                $ref: '#/components/schemas/Payment'
+              type: array
+            limit:
+              example: 30
+              type: integer
+            offset:
+              example: 10
+              type: integer
+            totalCount:
+              format: int64
+              type: integer
+          type: object
+      type: object
+    errorBadRequest:
+      properties:
+        code:
+          example: 400
+          format: number
+          type: string
+        message:
+          example: Parameter should be an string
+          type: string
+      type: object
+    errorConflict:
+      properties:
+        code:
+          example: 409
+          format: number
+          type: string
+        message:
+          example: Conflict - resource already exists
+          type: string
+      type: object
+    errorNotFound:
+      properties:
+        code:
+          example: 404
+          format: number
+          type: string
+        message:
+          example: Resource not found
+          type: string
+      type: object
+    errorServer:
+      properties:
+        code:
+          example: 500
+          format: number
+          type: string
+        message:
+          example: Internal server error
+          type: string
+      type: object
+info:
+  description: This is a service for payments.
+  title: Payments
+  version: '1.0'
+openapi: 3.0.1
+paths:
+  /v1/payment:
+    post:
+      operationId: storePayment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestBodyPayment'
+        description: New payment data
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponsePayment'
+          description: Payment object
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorBadRequest'
+          description: Invalid request
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorServer'
+          description: Server error
+      summary: Store a new payment
+      tags:
+      - payments
+  /v1/payment/{id}:
+    delete:
+      operationId: deletePayment
+      parameters:
+      - description: Id of the payment
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response200Deleted'
+          description: Payment deleted
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorNotFound'
+          description: Not found
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorServer'
+          description: Server error
+      summary: Delete the payment
+      tags:
+      - payments
+    get:
+      operationId: getPayment
+      parameters:
+      - description: Id of the payment
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponsePayment'
+          description: Payment object
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorBadRequest'
+          description: Invalid request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorNotFound'
+          description: Not found
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorServer'
+          description: Server error
+      summary: Get a single payment
+      tags:
+      - payments
+    put:
+      operationId: updatePayment
+      parameters:
+      - description: Id of the payment
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestBodyPayment'
+        description: Modified payment data
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response200Updated'
+          description: Payment updated
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorBadRequest'
+          description: Invalid request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorNotFound'
+          description: Not found
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorServer'
+          description: Server error
+      summary: Update the payment
+      tags:
+      - payments
+  /v1/payments:
+    get:
+      operationId: getPayments
+      parameters:
+      - description: Return payments of this user
+        in: query
+        name: userId
+        required: true
+        schema:
+          type: string
+      - description: Limit number of returned records
+        in: query
+        name: limit
+        schema:
+          type: number
+      - description: Offset for returned list of records
+        in: query
+        name: offset
+        schema:
+          type: number
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponsePayments'
+          description: Payment objects
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorBadRequest'
+          description: Invalid request
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorServer'
+          description: Server error
+      summary: Get all payments of single user
+      tags:
+      - payments
+  /v1/payments-total-by-ids:
+    get:
+      operationId: getPaymentsTotalByIds
+      parameters:
+      - description: Array of payments ids
+        in: query
+        name: ids
+        required: true
+        schema:
+          items: {}
+          type: array
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    example: 200
+                    type: integer
+                  data:
+                    properties:
+                      total:
+                        format: int64
+                        type: integer
+                    type: object
+          description: Total
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorBadRequest'
+          description: Invalid request
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorServer'
+          description: Server error
+      summary: Get total amount of user payments by ids
+      tags:
+      - payments
+  /v1/payments-total-by-types:
+    get:
+      operationId: getPaymentsTotalByTypes
+      parameters:
+      - description: Return payments of this user
+        in: query
+        name: userId
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    example: 200
+                    type: integer
+                  data:
+                    items:
+                      properties:
+                        paymentTypeId:
+                          example: 193f7235-468b-496b-8b79-7b9b8dba5b84
+                          type: string
+                        total:
+                          format: int64
+                          type: integer
+                    type: array
+          description: Total
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorBadRequest'
+          description: Invalid request
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorServer'
+          description: Server error
+      summary: Get total amount of user payments by types
+      tags:
+      - payments
+tags:
+- description: Operations about payments
+  name: payments
