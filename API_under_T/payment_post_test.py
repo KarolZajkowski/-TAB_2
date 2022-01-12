@@ -1,5 +1,6 @@
 import json
 import pytest
+import requests
 # import schemathesis  # valid for openapi 3+
 from uuid import UUID
 from unittest.mock import patch, Mock, MagicMock
@@ -38,7 +39,8 @@ def test_schema_initialization(get_schema):
 
 
 class ResponseGetMock(object):
-    """:return"""
+    """:return mocked data"""
+
     def json(self):
         return {"data": {
             "id": "1e0b3cac-1614-4af4-8284-c03b9b29340c",
@@ -54,7 +56,8 @@ class ResponseGetMock(object):
             "updatedAt": "2020-05-28 15:15:00"
         }}
 
-    def status_code(self): return 200 # type: int
+    def status_code(self): return 200  # type: int
+
 
 @pytest.fixture()
 def body_payment():
@@ -143,23 +146,38 @@ def test_200_created(project_file):
     data = Payment(backend=project_file)
     json_data = data.backend.read()
     json_data = json.loads(json_data)
-    print("json_datajson_datajson_datajson_data", json_data)
-    # assert json_data  # type: json
-    # assert UUID(json_data['id'], version=4)
-    # assert UUID(json_data['userId'], version=4)
-    # assert UUID(json_data['typeId'], version=4)
-    # assert UUID(json_data['distributionModelId'], version=4)
+    assert json_data  # type: json
+    assert UUID(json_data['id'], version=4)
+    assert UUID(json_data['userId'], version=4)
+    assert UUID(json_data['typeId'], version=4)
+    assert UUID(json_data['distributionModelId'], version=4)
+    # return str(json_data['id'])
     return str(json_data['id'])
+
+
+@pytest.fixture(params=({
+                            "code": "200",
+                            "message": "Resource updated"
+                        }, {
+                            "code": "400",
+                            "message": "Parameter should be an string"
+                        }, {
+                            "code": "404",
+                            "message": "Resource not found"},
+                        {
+                            "code": "500",
+                            "message": "Internal server error"}))
+def test_get_param(request):
+    """:return Parametrize POST response """
+    return request.param
 
 
 # @patch.object(requests, 'get', return_value=ResponseGetMock())
 @patch('requests.post')
-def test_post_id(mocked_get, project_file, test_200_created, payment, test_post_param):
+def test_get_id(mocked_get, project_file, test_200_created, payment, test_get_param):
     id = test_200_created
-    status_code = test_post_param['code']
-    if int(status_code) == 200:
-        test_post_param["data"]["id"] = id
-        mocked_data = test_post_param["data"]
+    status_code = test_get_param['code']
+    mocked_data = test_get_param["message"]
 
     # mocked_get.return_value = Mock()
     mocked_get.return_value = Mock(status_code=status_code, json=lambda: mocked_data)
@@ -167,22 +185,47 @@ def test_post_id(mocked_get, project_file, test_200_created, payment, test_post_
     # resp = requests.post(f"/v1/payment/{id}")  # no body in this step
 
     assert response.status_code
+    if status_code == 200:
+        assert response.json()['message'] == "Resource updated"
+    elif status_code == 400:
+        assert response.json()['message'] == "Parameter should be an string"
+    elif status_code == 404:
+        assert response.json()['message'] == "Resource not found"
+    elif status_code == 500:
+        assert response.json()['message'] == "Internal server error"
+
+
+@pytest.fixture(params=({
+                            "code": "200",
+                            "message": "Resource deleted"
+                        }, {
+                            "code": "404",
+                            "message": "Resource not found"
+                        }, {
+                            "code": "500",
+                            "message": "Internal server error"}))
+def test_delete_param(request):
+    """:return Parametrize POST response """
+    return request.param
 
 
 @patch('requests.delete')
-def test_delete_id(mocked_get, project_file, test_200_created, payment, test_post_param, body_payment):
-    headers, data = body_payment
+def test_delete_id(mocked_get, project_file, test_200_created, payment, test_delete_param):
     id = test_200_created
-    status_code = test_post_param['code']
-    if int(status_code) == 200:
-        test_post_param["data"]["id"] = id
-        mocked_data = test_post_param["data"]
+    status_code = test_delete_param['code']
+    mocked_data = test_delete_param["message"]
 
     # mocked_get.return_value = Mock()
     mocked_get.return_value = Mock(status_code=status_code, json=lambda: mocked_data)
-    response = payment.payment_delete(f"/v1/payment/{id}", headers, data)  # temp <- object mocked
+    response = payment.payment_delete(f"/v1/payment/{id}")  # temp <- object mocked
 
     assert response.status_code
+    if status_code == 200:
+        assert response.json()['message'] == "Resource deleted"
+    elif status_code == 404:
+        assert response.json()['message'] == "Resource not found"
+    elif status_code == 500:
+        assert response.json()['message'] == "Internal server error"
 
 
 def test_close_project_file(project_file):

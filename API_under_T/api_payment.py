@@ -76,11 +76,11 @@ class Payment(object):
 
         return resp
 
-    def payment_delete(self, endpoint, headers, data):
+    def payment_delete(self, endpoint):
         if not endpoint:
             return None  # no post method endpoint
         url = urljoin(TESTING_API, endpoint)
-        resp = requests.delete(url, headers, data)  # no body in this step
+        resp = requests.delete(url)
 
         return resp
 
